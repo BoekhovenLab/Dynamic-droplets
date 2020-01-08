@@ -1,0 +1,66 @@
+% This code is written for MatLab
+% Please cite 10.1002/syst.201900044 when using this code in your work
+
+%//// SETUP  //////
+clf, clear
+hr       = 3600; %amount of seconds per hour
+t        = 1*hr; %amount of hours in calculation
+plot_EDC = 0;    %Plot the [EDC]? (0 or 1)
+plot_ANH = 1;    %Plot the [anhydride]? (0 or 1)
+plot_COOH = 0;   %Plot the [COOH]? (0 or 1)
+
+%////// SET THE INITIAL CONCENTRATIONS/////
+
+Fuel = 25;         %Set the concentration fuel in mM
+Acid = 30;         %Set the concentration precursor in mM
+
+%%%%%%%SETUP_kinetic_parameters%%%%%
+
+COOH(1)   = Acid/500;
+EDC(1)    = Fuel/1000;  
+COOEDC(1) = 0;   
+COOOC(1)  = 0;  
+EDU(1)    = 0; 
+
+    k1 = 0.060;  
+    k2 = 0.120; 
+    k3 = 0.000;
+    k4 = 0.014;  
+
+    
+for i=1:t
+    r1(i) = k1*EDC(i)*COOH(i);      %COO + EDC => COOEDC
+    r2(i) = k2*COOEDC(i);           %COO + COOEDC => COOOC + EDU
+    r3(i) = k3*COOEDC(i);           %COOEDC => COO + EDCU
+    r4(i) = k4*COOOC(i);            %COOOC => 2COO  
+
+    
+    EDC(i+1) = EDC(i)-r1(i);  
+    COOH(i+1) = COOH(i)-r1(i)-r2(i)+2*r4(i)+r3(i);      
+    COOEDC(i+1) = COOEDC(i)+r1(i)-r2(i)-r3(i);     
+    COOOC(i+1) = COOOC(i)+r2(i)-r4(i);
+    EDU(i+1) = EDU(i)+r2(i)+r3(i); 
+end
+
+%//// PLOTTING ////// 
+figure(1);
+subplot(2,2,1)
+plot((1:t)/60,COOH(1:t)*1000/2, '-m');  %divided by 2 to transfer concentration of catboxyl groups into precursor concentration
+xlabel('Time [min]')
+ylabel('c(precursor) [mM]')
+xlim([0 t/60])
+ylim([0 Acid])
+
+subplot(2,2,2)
+plot ((1:t)/60,COOOC(1:t)*1000, '-m');
+hold on
+xlabel('Time [min]')
+ylabel('c(anhydride) [mM]')
+xlim([0 t/60])
+
+subplot(2,2,3)
+plot ((1:t)/60,EDC(1:t)*1000, '-m');
+xlabel('Time [min]')
+ylabel('c(EDC) [mM]')
+xlim([0 t/60])
+ylim([0 Fuel])
