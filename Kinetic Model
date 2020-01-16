@@ -12,7 +12,7 @@ plot_COOH = 0;   %Plot the [COOH]? (0 or 1)
 %////// SET THE INITIAL CONCENTRATIONS/////
 
 Fuel = 25;         %Set the concentration fuel in mM
-Acid = 30;         %Set the concentration precursor in mM
+Acid = 23;         %Set the concentration precursor in mM
 
 %%%%%%%SETUP_kinetic_parameters%%%%%
 
@@ -22,10 +22,10 @@ COOEDC(1) = 0;
 COOOC(1)  = 0;  
 EDU(1)    = 0; 
 
-    k1 = 0.060;  
-    k2 = 0.120; 
+    k1 = 0.075;  
+    k2 = 0.150; 
     k3 = 0.000;
-    k4 = 0.014;  
+    k4 = 0.018;  
 
     
 for i=1:t
